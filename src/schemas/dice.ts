@@ -1,9 +1,7 @@
 import { z } from "zod";
 
-import { stringAsNumber } from "./utils";
-
 export const diceFormSchema = z.object({
-	sides: stringAsNumber.min(4).max(24),
-	material: z.string(),
-	rigidness: stringAsNumber.min(1).max(100),
+	sides: z.number(),
+	material: z.number(),
+	rigidness: z.number(),
 });

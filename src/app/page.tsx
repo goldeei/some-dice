@@ -1,12 +1,12 @@
 "use client";
 
 import DicePropForm from "@/components/dice-prop-form";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Home() {
 	const diceDefaults = {
 		sides: 4,
-		material: "material1",
+		material: 1,
 		rigidness: 50,
 	};
 
@@ -20,8 +20,18 @@ export default function Home() {
 		rigidness: setRigidness,
 	};
 
-	const handleDicePropChange = (key: string, value: unknown) =>
-		console.table({ sides, material, rigidness });
+	const diceProps = useMemo(
+		() => ({ sides, material, rigidness }),
+		[sides, material, rigidness]
+	);
+
+	const handleDicePropChange = (key: keyof typeof diceProps, value: number) => {
+		setDiceProp[key](value);
+	};
+
+	useEffect(() => {
+		console.log(diceProps);
+	}, [diceProps]);
 
 	return (
 		<div id="root">

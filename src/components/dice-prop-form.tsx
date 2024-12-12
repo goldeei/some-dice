@@ -1,10 +1,9 @@
 import { diceFormSchema } from "@/schemas";
-import { DiceProperties } from "@/types/dice";
+import { DiceProperties, SetDiceProps } from "@/types/dice";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import NumericSlider from "./numeric-slider";
+import { Button } from "./ui/button";
 import {
 	Form,
 	FormControl,
@@ -13,11 +12,10 @@ import {
 	FormLabel,
 	FormMessage,
 } from "./ui/form";
-import { Input } from "./ui/input";
 import { Slider } from "./ui/slider";
 
 interface DicePropFormProps {
-	onDicePropsChange: (key: string, value: unknown) => void;
+	onDicePropsChange: SetDiceProps;
 	diceDefaults: DiceProperties;
 	diceProps: DiceProperties;
 }
@@ -28,26 +26,29 @@ const DicePropForm = ({ ...props }: DicePropFormProps) => {
 	const form = useForm<DiceProperties>({
 		resolver: zodResolver(diceFormSchema),
 		defaultValues: diceDefaults,
-		mode: "onChange",
 	});
 
-	const currValues = form.watch();
+	const handleValueChange = (name: keyof DiceProperties, v: number) =>
+		onDicePropsChange(name, v);
 
-	useEffect(() => {
-		console.log(currValues);
-	}, [currValues]);
+	const onSubmit = (values: DiceProperties) => console.log(values);
 
 	return (
 		<Form {...form}>
-			<form>
+			<form onSubmit={form.handleSubmit(onSubmit)}>
 				<FormField
 					control={form.control}
 					name="sides"
-					render={({ field }) => (
+					render={({ field: { name } }) => (
 						<FormItem>
 							<FormLabel>Sides</FormLabel>
 							<FormControl>
-								<Input {...field} />
+								<Slider
+									min={0}
+									max={100}
+									step={1}
+									onValueChange={(v) => handleValueChange(name, v[0])}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -56,16 +57,22 @@ const DicePropForm = ({ ...props }: DicePropFormProps) => {
 				<FormField
 					control={form.control}
 					name="rigidness"
-					render={({ field }) => (
+					render={({ field: { name } }) => (
 						<FormItem>
-							<FormLabel>Rigidness</FormLabel>
+							<FormLabel>Rigidness {diceProps[name]}</FormLabel>
 							<FormControl>
-								<Input {...field} />
+								<Slider
+									min={0}
+									max={100}
+									step={1}
+									onValueChange={(v) => handleValueChange(name, v[0])}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
+				<Button type="submit">Submit</Button>
 			</form>
 		</Form>
 	);
