@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 export default function Home() {
 	const diceDefaults = {
 		sides: 4,
-		material: 1,
+		material: 0,
 		rigidness: 50,
 	};
 
