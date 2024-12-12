@@ -1,3 +1,4 @@
+import { MATERIALS } from "@/app/constants/dice";
 import { diceFormSchema } from "@/schemas";
 import { DiceProperties, SetDiceProps } from "@/types/dice";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +13,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "./ui/form";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Slider } from "./ui/slider";
 
 interface DicePropFormProps {
@@ -67,6 +69,29 @@ const DicePropForm = ({ ...props }: DicePropFormProps) => {
 									step={1}
 									onValueChange={(v) => handleValueChange(name, v[0])}
 								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="material"
+					render={({ field: { name, value } }) => (
+						<FormItem>
+							<FormLabel>Material</FormLabel>
+							<FormControl>
+								<RadioGroup
+									value={value.toString()}
+									onValueChange={(v) => handleValueChange(name, Number(v))}
+								>
+									{MATERIALS.map((material, i) => (
+										<div key={material}>
+											<RadioGroupItem value={i.toString()} id={material} />
+											<FormLabel htmlFor={material}>{material}</FormLabel>
+										</div>
+									))}
+								</RadioGroup>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
