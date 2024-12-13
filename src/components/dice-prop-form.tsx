@@ -37,7 +37,8 @@ const DicePropForm = ({ ...props }: DicePropFormProps) => {
 	const prevValues = useRef<DiceProperties>(formValues);
 
 	const handleValueChange = useCallback(
-		(name: keyof DiceProperties, v: number) => onDicePropsChange(name, v),
+		(name: keyof DiceProperties, v: number | string) =>
+			onDicePropsChange(name, v),
 		[onDicePropsChange]
 	);
 	useEffect(() => {
@@ -102,11 +103,11 @@ const DicePropForm = ({ ...props }: DicePropFormProps) => {
 							<FormControl>
 								<RadioGroup
 									defaultValue={value.toString()}
-									onValueChange={() => onChange(Number(value))}
+									onValueChange={onChange}
 								>
-									{MATERIALS.map((material, i) => (
+									{MATERIALS.map((material) => (
 										<div key={material}>
-											<RadioGroupItem value={i.toString()} id={material} />
+											<RadioGroupItem value={material} id={material} />
 											<Label htmlFor={material} className="cursor-pointer">
 												{material}
 											</Label>

@@ -4,10 +4,12 @@ import DicePropForm from "@/components/dice-prop-form";
 import { DiceProperties } from "@/types";
 import { useEffect, useMemo, useState } from "react";
 
+import { MATERIALS } from "./constants/dice";
+
 export default function Home() {
 	const diceDefaults = {
 		sides: 4,
-		material: 0,
+		material: MATERIALS[0],
 		rigidness: 50,
 	};
 
@@ -15,7 +17,11 @@ export default function Home() {
 	const [material, setMaterial] = useState(diceDefaults.material);
 	const [rigidness, setRigidness] = useState(diceDefaults.rigidness);
 
-	const setDiceProp = {
+	const setDiceProp: {
+		[key in keyof DiceProperties]: React.Dispatch<
+			React.SetStateAction<DiceProperties[key]>
+		>;
+	} = {
 		sides: setSides,
 		material: setMaterial,
 		rigidness: setRigidness,
@@ -26,7 +32,10 @@ export default function Home() {
 		[sides, material, rigidness]
 	);
 
-	const handleDicePropChange = (key: keyof typeof diceProps, value: number) => {
+	const handleDicePropChange = <Key extends keyof DiceProperties>(
+		key: Key,
+		value: DiceProperties[Key]
+	) => {
 		setDiceProp[key](value);
 	};
 
@@ -35,7 +44,7 @@ export default function Home() {
 	}, [diceProps]);
 
 	const handleDicePropFormSubmit = (values: DiceProperties) =>
-		console.log(values);
+		console.log("Form Submit", values);
 
 	return (
 		<div id="root">

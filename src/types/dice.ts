@@ -5,4 +5,7 @@ export type DiceProperties = z.infer<typeof diceFormSchema>;
 export type DicePropertyKeys = keyof DiceProperties;
 export type DiceState = DiceProperties;
 
-export type SetDiceProps = (key: DicePropertyKeys, value: number) => void;
+export type SetDiceProps = (
+	key: DicePropertyKeys,
+	value: number | string
+) => void;
