@@ -2,8 +2,10 @@ import { MATERIALS } from "@/app/constants/dice";
 import { diceFormSchema } from "@/schemas";
 import { DiceProperties, SetDiceProps } from "@/types/dice";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 
+import { NumericSlider } from "./numeric-slider";
 import { Button } from "./ui/button";
 import {
 	Form,
@@ -13,43 +15,60 @@ import {
 	FormLabel,
 	FormMessage,
 } from "./ui/form";
+import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Slider } from "./ui/slider";
 
 interface DicePropFormProps {
 	onDicePropsChange: SetDiceProps;
 	diceDefaults: DiceProperties;
 	diceProps: DiceProperties;
+	onSubmit: (values: DiceProperties) => void;
 }
 
 const DicePropForm = ({ ...props }: DicePropFormProps) => {
-	const { onDicePropsChange, diceProps, diceDefaults } = props;
+	const { onDicePropsChange, diceProps, diceDefaults, onSubmit } = props;
 
 	const form = useForm<DiceProperties>({
 		resolver: zodResolver(diceFormSchema),
 		defaultValues: diceDefaults,
 	});
 
-	const handleValueChange = (name: keyof DiceProperties, v: number) =>
-		onDicePropsChange(name, v);
+	const formValues = form.watch();
+	const prevValues = useRef<DiceProperties>(formValues);
 
-	const onSubmit = (values: DiceProperties) => console.log(values);
+	const handleValueChange = useCallback(
+		(name: keyof DiceProperties, v: number) => onDicePropsChange(name, v),
+		[onDicePropsChange]
+	);
+	useEffect(() => {
+		const changedKey = Object.keys(formValues).find((key) => {
+			const k = key as keyof DiceProperties;
+			return formValues[k] !== prevValues.current[k];
+		}) as keyof DiceProperties | undefined;
+
+		if (changedKey) {
+			handleValueChange(changedKey, formValues[changedKey]);
+			prevValues.current = formValues;
+		}
+	}, [formValues, handleValueChange]);
+
+	const onFormSubmit = (values: DiceProperties) => onSubmit(values);
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)}>
+			<form onSubmit={form.handleSubmit(onFormSubmit)}>
 				<FormField
 					control={form.control}
 					name="sides"
-					render={({ field: { name } }) => (
+					render={({ field: { name, onChange } }) => (
 						<FormItem>
-							<FormLabel>Sides</FormLabel>
+							<FormLabel>Sides {diceProps[name]}</FormLabel>
 							<FormControl>
-								<Slider
+								<NumericSlider
 									min={0}
-									max={100}
-									step={1}
-									onValueChange={(v) => handleValueChange(name, v[0])}
+									max={20}
+									step={2}
+									onValueChange={onChange}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -59,15 +78,15 @@ const DicePropForm = ({ ...props }: DicePropFormProps) => {
 				<FormField
 					control={form.control}
 					name="rigidness"
-					render={({ field: { name } }) => (
+					render={({ field: { name, onChange } }) => (
 						<FormItem>
 							<FormLabel>Rigidness {diceProps[name]}</FormLabel>
 							<FormControl>
-								<Slider
+								<NumericSlider
 									min={0}
 									max={100}
 									step={1}
-									onValueChange={(v) => handleValueChange(name, v[0])}
+									onValueChange={onChange}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -77,18 +96,20 @@ const DicePropForm = ({ ...props }: DicePropFormProps) => {
 				<FormField
 					control={form.control}
 					name="material"
-					render={({ field: { name, value } }) => (
+					render={({ field: { value, onChange } }) => (
 						<FormItem>
 							<FormLabel>Material</FormLabel>
 							<FormControl>
 								<RadioGroup
-									value={value.toString()}
-									onValueChange={(v) => handleValueChange(name, Number(v))}
+									defaultValue={value.toString()}
+									onValueChange={() => onChange(Number(value))}
 								>
 									{MATERIALS.map((material, i) => (
 										<div key={material}>
 											<RadioGroupItem value={i.toString()} id={material} />
-											<FormLabel htmlFor={material}>{material}</FormLabel>
+											<Label htmlFor={material} className="cursor-pointer">
+												{material}
+											</Label>
 										</div>
 									))}
 								</RadioGroup>
