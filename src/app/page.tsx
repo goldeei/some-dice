@@ -1,6 +1,7 @@
 "use client";
 
 import DicePropForm from "@/components/dice-prop-form";
+import { Floor } from "@/components/floor";
 import { TestCube } from "@/components/test-cube";
 import { Button } from "@/components/ui/button";
 import { DiceProperties } from "@/types";
@@ -80,8 +81,11 @@ export default function Home() {
 						<Suspense fallback={null}>
 							<Environment preset="sunset" />
 							<Physics paused={isSimPaused}>
-								<RigidBody>
+								<RigidBody restitution={1}>
 									<TestCube />
+								</RigidBody>
+								<RigidBody type="fixed">
+									<Floor />
 								</RigidBody>
 							</Physics>
 							<OrbitControls />
