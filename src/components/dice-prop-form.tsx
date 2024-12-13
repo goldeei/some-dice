@@ -2,7 +2,6 @@ import { MATERIALS, RIGIDNESS_MINMAX, SIDE_MINMAX } from "@/app/constants/dice";
 import { diceFormSchema } from "@/schemas";
 import { DiceProperties, SetDiceProps } from "@/types/dice";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SidebarClose } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 
