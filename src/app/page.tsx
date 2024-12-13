@@ -2,6 +2,7 @@
 
 import DicePropForm from "@/components/dice-prop-form";
 import { TestCube } from "@/components/test-cube";
+import { Button } from "@/components/ui/button";
 import { DiceProperties } from "@/types";
 import {
 	Environment,
@@ -25,6 +26,8 @@ export default function Home() {
 	const [sides, setSides] = useState(diceDefaults.sides);
 	const [material, setMaterial] = useState(diceDefaults.material);
 	const [rigidness, setRigidness] = useState(diceDefaults.rigidness);
+
+	const [isSimPaused, setIsSimPaused] = useState(true);
 
 	const setDiceProp: {
 		[key in keyof DiceProperties]: React.Dispatch<
@@ -63,15 +66,7 @@ export default function Home() {
 
 	return (
 		<div id="root">
-			<main>
-				<div className="absolute">
-					<DicePropForm
-						onDicePropsChange={handleDicePropChange}
-						diceDefaults={diceDefaults}
-						diceProps={{ sides, material, rigidness }}
-						onSubmit={handleDicePropFormSubmit}
-					/>
-				</div>
+			<main className="relative">
 				<div className="h-dvh w-svw">
 					{progress.progress < 100 && (
 						<div className="text-center absolute left-1/2 -translate-x-1/2 top-1/2">
@@ -84,7 +79,7 @@ export default function Home() {
 					>
 						<Suspense fallback={null}>
 							<Environment preset="sunset" />
-							<Physics>
+							<Physics paused={isSimPaused}>
 								<RigidBody>
 									<TestCube />
 								</RigidBody>
@@ -93,6 +88,17 @@ export default function Home() {
 							<Preload all />
 						</Suspense>
 					</Canvas>
+				</div>
+				<div className="absolute top-0 left-0">
+					<DicePropForm
+						onDicePropsChange={handleDicePropChange}
+						diceDefaults={diceDefaults}
+						diceProps={{ sides, material, rigidness }}
+						onSubmit={handleDicePropFormSubmit}
+					/>
+					<Button onPointerDown={() => setIsSimPaused(!isSimPaused)}>
+						{isSimPaused ? "Play" : "Pause"}
+					</Button>
 				</div>
 			</main>
 			<footer></footer>
