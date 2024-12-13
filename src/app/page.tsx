@@ -1,8 +1,16 @@
 "use client";
 
 import DicePropForm from "@/components/dice-prop-form";
+import { TestCube } from "@/components/test-cube";
 import { DiceProperties } from "@/types";
-import { useEffect, useMemo, useState } from "react";
+import {
+	Environment,
+	OrbitControls,
+	Preload,
+	useProgress,
+} from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { MATERIALS } from "./constants/dice";
 
@@ -46,15 +54,41 @@ export default function Home() {
 	const handleDicePropFormSubmit = (values: DiceProperties) =>
 		console.log("Form Submit", values);
 
+	const handleLoadStart = () => console.log("asldkj");
+	const progress = useProgress();
+	useEffect(() => {
+		console.log(progress);
+	}, [progress]);
+
 	return (
 		<div id="root">
-			<main className="flex-1 flex items-center justify-center">
-				<DicePropForm
-					onDicePropsChange={handleDicePropChange}
-					diceDefaults={diceDefaults}
-					diceProps={{ sides, material, rigidness }}
-					onSubmit={handleDicePropFormSubmit}
-				/>
+			<main>
+				<div className="absolute">
+					<DicePropForm
+						onDicePropsChange={handleDicePropChange}
+						diceDefaults={diceDefaults}
+						diceProps={{ sides, material, rigidness }}
+						onSubmit={handleDicePropFormSubmit}
+					/>
+				</div>
+				<div className="h-dvh w-svw">
+					{progress.progress < 100 && (
+						<div className="text-center absolute left-1/2 -translate-x-1/2 top-1/2">
+							Loading...
+						</div>
+					)}
+					<Canvas
+						onLoadStart={handleLoadStart}
+						fallback={<div>Sorry no WebGL supported!</div>}
+					>
+						<Suspense fallback={null}>
+							<Environment preset="sunset" />
+							<TestCube />
+							<OrbitControls />
+							<Preload all />
+						</Suspense>
+					</Canvas>
+				</div>
 			</main>
 			<footer></footer>
 		</div>
