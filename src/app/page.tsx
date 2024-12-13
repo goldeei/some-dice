@@ -10,6 +10,7 @@ import {
 	useProgress,
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import { Physics, RigidBody } from "@react-three/rapier";
 import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { MATERIALS } from "./constants/dice";
@@ -83,7 +84,11 @@ export default function Home() {
 					>
 						<Suspense fallback={null}>
 							<Environment preset="sunset" />
-							<TestCube />
+							<Physics>
+								<RigidBody>
+									<TestCube />
+								</RigidBody>
+							</Physics>
 							<OrbitControls />
 							<Preload all />
 						</Suspense>
