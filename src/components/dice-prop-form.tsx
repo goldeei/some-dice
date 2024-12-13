@@ -1,7 +1,8 @@
-import { MATERIALS } from "@/app/constants/dice";
+import { MATERIALS, RIGIDNESS_MINMAX, SIDE_MINMAX } from "@/app/constants/dice";
 import { diceFormSchema } from "@/schemas";
 import { DiceProperties, SetDiceProps } from "@/types/dice";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SidebarClose } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 
@@ -65,8 +66,8 @@ const DicePropForm = ({ ...props }: DicePropFormProps) => {
 							<FormLabel>Sides {diceProps[name]}</FormLabel>
 							<FormControl>
 								<NumericSlider
-									min={0}
-									max={20}
+									min={SIDE_MINMAX.min}
+									max={SIDE_MINMAX.max}
 									step={2}
 									onValueChange={onChange}
 								/>
@@ -83,8 +84,8 @@ const DicePropForm = ({ ...props }: DicePropFormProps) => {
 							<FormLabel>Rigidness {diceProps[name]}</FormLabel>
 							<FormControl>
 								<NumericSlider
-									min={0}
-									max={100}
+									min={RIGIDNESS_MINMAX.min}
+									max={RIGIDNESS_MINMAX.max}
 									step={1}
 									onValueChange={onChange}
 								/>
