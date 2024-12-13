@@ -1,9 +1,8 @@
 "use client";
 
 import DicePropForm from "@/components/dice-prop-form";
-import { Floor } from "@/components/floor";
-import { TestCube } from "@/components/test-cube";
 import { Button } from "@/components/ui/button";
+import { World } from "@/components/world";
 import { DiceProperties } from "@/types";
 import {
 	Environment,
@@ -12,7 +11,7 @@ import {
 	useProgress,
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Physics, RigidBody } from "@react-three/rapier";
+import { Physics } from "@react-three/rapier";
 import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { MATERIALS } from "./constants/dice";
@@ -27,8 +26,15 @@ export default function Home() {
 	const [sides, setSides] = useState(diceDefaults.sides);
 	const [material, setMaterial] = useState(diceDefaults.material);
 	const [rigidness, setRigidness] = useState(diceDefaults.rigidness);
-
+	const [worldResetTrigger, setWorldResetTrigger] = useState(true);
+	const [worldDidPlay, setWorldDidPlay] = useState(false);
 	const [isSimPaused, setIsSimPaused] = useState(true);
+
+	useEffect(() => {
+		if (!isSimPaused) {
+			setWorldDidPlay(true);
+		}
+	}, [isSimPaused]);
 
 	const setDiceProp: {
 		[key in keyof DiceProperties]: React.Dispatch<
@@ -59,11 +65,15 @@ export default function Home() {
 	const handleDicePropFormSubmit = (values: DiceProperties) =>
 		console.log("Form Submit", values);
 
-	const handleLoadStart = () => console.log("asldkj");
 	const progress = useProgress();
 	useEffect(() => {
 		console.log(progress);
 	}, [progress]);
+
+	const handleWorldReset = () => {
+		setWorldResetTrigger(!worldResetTrigger);
+		setWorldDidPlay(false);
+	};
 
 	return (
 		<div id="root">
@@ -74,19 +84,14 @@ export default function Home() {
 							Loading...
 						</div>
 					)}
-					<Canvas
-						onLoadStart={handleLoadStart}
-						fallback={<div>Sorry no WebGL supported!</div>}
-					>
+					<Canvas fallback={<div>Sorry no WebGL supported!</div>}>
 						<Suspense fallback={null}>
 							<Environment preset="sunset" />
 							<Physics paused={isSimPaused}>
-								<RigidBody restitution={1}>
-									<TestCube />
-								</RigidBody>
-								<RigidBody type="fixed">
-									<Floor />
-								</RigidBody>
+								<World
+									worldResetTrigger={worldResetTrigger}
+									setIsSimPaused={setIsSimPaused}
+								/>
 							</Physics>
 							<OrbitControls />
 							<Preload all />
@@ -102,6 +107,9 @@ export default function Home() {
 					/>
 					<Button onPointerDown={() => setIsSimPaused(!isSimPaused)}>
 						{isSimPaused ? "Play" : "Pause"}
+					</Button>
+					<Button onPointerDown={handleWorldReset} disabled={!worldDidPlay}>
+						Reset
 					</Button>
 				</div>
 			</main>
