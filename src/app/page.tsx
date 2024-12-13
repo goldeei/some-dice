@@ -1,6 +1,7 @@
 "use client";
 
 import DicePropForm from "@/components/dice-prop-form";
+import { DiceProperties } from "@/types";
 import { useEffect, useMemo, useState } from "react";
 
 export default function Home() {
@@ -33,6 +34,9 @@ export default function Home() {
 		console.log(diceProps);
 	}, [diceProps]);
 
+	const handleDicePropFormSubmit = (values: DiceProperties) =>
+		console.log(values);
+
 	return (
 		<div id="root">
 			<main className="flex-1 flex items-center justify-center">
@@ -40,6 +44,7 @@ export default function Home() {
 					onDicePropsChange={handleDicePropChange}
 					diceDefaults={diceDefaults}
 					diceProps={{ sides, material, rigidness }}
+					onSubmit={handleDicePropFormSubmit}
 				/>
 			</main>
 			<footer></footer>
