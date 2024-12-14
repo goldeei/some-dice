@@ -1,5 +1,6 @@
 import { RigidBody } from "@react-three/rapier";
 
+import { Backboard } from "./backboard";
 import { Side } from "./side";
 
 export const Environment = ({}) => {
@@ -10,6 +11,7 @@ export const Environment = ({}) => {
 			<Side zSide="back" xSide="right" />
 			<Side zSide="front" xSide="right" />
 			<Side zSide="front" xSide="left" />
+			<Backboard zPos={-1.5} />
 		</RigidBody>
 	);
 };
