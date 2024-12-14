@@ -4,12 +4,7 @@ import DicePropForm from "@/components/dice-prop-form";
 import { Button } from "@/components/ui/button";
 import { World } from "@/components/world";
 import { DiceProperties } from "@/types";
-import {
-	Environment,
-	OrbitControls,
-	Preload,
-	useProgress,
-} from "@react-three/drei";
+import { Environment, OrbitControls, Preload, useProgress } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
 import { Suspense, useEffect, useMemo, useState } from "react";
