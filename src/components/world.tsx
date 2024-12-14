@@ -2,7 +2,7 @@ import { useResetWorld } from "@/hooks/useResetWorld";
 import { RigidBody } from "@react-three/rapier";
 import { Dispatch, SetStateAction, useEffect } from "react";
 
-import { Floor } from "./floor";
+import { Environment } from "./environment";
 import { TestCube } from "./test-cube";
 
 type WorldProps = {
@@ -23,9 +23,7 @@ export const World = ({ ...props }: WorldProps) => {
 			<RigidBody restitution={1}>
 				<TestCube />
 			</RigidBody>
-			<RigidBody type="fixed">
-				<Floor />
-			</RigidBody>
+			<Environment />
 		</>
 	);
 };
