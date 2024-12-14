@@ -1,5 +1,5 @@
 import { FLOOR_Y, SIDE_SIZE } from "@/app/constants/environment";
-import { getRotationArrayFromDegrees } from "@/lib";
+import { alignBottomToFloor, getRotationArrayFromDegrees } from "@/lib";
 import { Plane } from "@react-three/drei";
 
 type ZSide = "front" | "back";
@@ -27,7 +27,7 @@ const getSidePos = (
 	isFloor = false
 ) => {
 	if (isFloor) return [0, floor, 0];
-	const yPos = size / 2 + floor;
+	const yPos = alignBottomToFloor(size);
 	const xDir = xSide === "left" ? -1 : 1;
 	const zDir = zSide === "back" ? -1 : 1;
 

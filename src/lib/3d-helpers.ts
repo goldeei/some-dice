@@ -1,3 +1,4 @@
+import { FLOOR_Y } from "@/app/constants/environment";
 import { RotationArray, RotationMinMax } from "@/types";
 
 // ROTATION
@@ -44,3 +45,5 @@ export const getRotationArrayFromDegrees = (rotArr: RotationArray) => {
 	// Return the potentially modified rotation array with values in radians
 	return rotation;
 };
+
+export const alignBottomToFloor = (size: number) => size / 2 + FLOOR_Y;
