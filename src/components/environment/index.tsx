@@ -5,7 +5,7 @@ import { Side } from "./side";
 
 export const Environment = ({}) => {
 	return (
-		<RigidBody type="fixed">
+		<RigidBody type="fixed" restitution={1.1}>
 			<Side isFloor />
 			<Side zSide="back" xSide="left" />
 			<Side zSide="back" xSide="right" />

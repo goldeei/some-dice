@@ -2,8 +2,8 @@ import { useResetWorld } from "@/hooks/useResetWorld";
 import { RigidBody } from "@react-three/rapier";
 import { Dispatch, SetStateAction, useEffect } from "react";
 
+import { Dice } from "./dice";
 import { Environment } from "./environment";
-import { TestCube } from "./test-cube";
 
 type WorldProps = {
 	worldResetTrigger: boolean;
@@ -20,9 +20,7 @@ export const World = ({ ...props }: WorldProps) => {
 
 	return (
 		<>
-			<RigidBody restitution={1}>
-				<TestCube />
-			</RigidBody>
+			<Dice />
 			<Environment />
 		</>
 	);
