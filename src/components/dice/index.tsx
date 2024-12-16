@@ -1,16 +1,9 @@
+import { ROLL_IMPULSE_MINMAX } from "@/app/constants";
+import { randomBetweenOneAndZero } from "@/lib";
 import { RapierRigidBody } from "@react-three/rapier";
 import { useRef, useState } from "react";
 
 import { Die } from "./die";
-
-const rollXMin = -0.1;
-const rollXMax = 0.1;
-
-const rollYMin = -0.05;
-const rollYMax = 0.01;
-
-const rollZMin = -0.05;
-const rollZMax = -0.1;
 
 export const Dice = ({}) => {
 	const dice = ["dice1", "dice2", "dice3", "dice4", "dice5"];
@@ -33,18 +26,19 @@ export const Dice = ({}) => {
 	const handleRoll = () => {
 		if (diceRefs.current) {
 			setGravityScale(1);
+			const { x, y, z } = ROLL_IMPULSE_MINMAX;
 			diceRefs.current.forEach((dieRef) => {
 				console.log({
-					x: Math.random() * (rollXMax - rollXMin) + rollXMin,
-					y: Math.random() * (rollYMax - rollYMin) + rollYMin,
-					z: Math.random() * (rollZMax - rollZMin) + rollZMin,
+					x: randomBetweenOneAndZero(x.min, x.max),
+					y: randomBetweenOneAndZero(y.min, y.max),
+					z: randomBetweenOneAndZero(z.min, z.max),
 				});
 				if (dieRef) {
 					dieRef.applyImpulse(
 						{
-							x: Math.random() * (rollXMax - rollXMin) + rollXMin,
-							y: Math.random() * (rollYMax - rollYMin) + rollYMin,
-							z: Math.random() * (rollZMax - rollZMin) + rollZMin,
+							x: randomBetweenOneAndZero(x.min, x.max),
+							y: randomBetweenOneAndZero(y.min, y.max),
+							z: randomBetweenOneAndZero(z.min, z.max),
 						},
 						true
 					);
