@@ -11,7 +11,6 @@ import {
 	useProgress,
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Physics } from "@react-three/rapier";
 import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { MATERIALS } from "./constants/dice";
@@ -60,7 +59,7 @@ export default function Home() {
 	const progress = useProgress();
 
 	const handleDiceRoll = () => {
-		setIsDiceRolling(true);
+		setIsDiceRolling(!isDiceRolling);
 	};
 
 	const handleWorldReset = () => {
@@ -79,12 +78,10 @@ export default function Home() {
 					<Canvas fallback={<div>Sorry no WebGL supported!</div>}>
 						<Suspense fallback={null}>
 							<Environment preset="sunset" />
-							<Physics>
-								<World
-									worldResetTrigger={worldResetTrigger}
-									isDiceRolling={isDiceRolling}
-								/>
-							</Physics>
+							<World
+								worldResetTrigger={worldResetTrigger}
+								isDiceRolling={isDiceRolling}
+							/>
 							<OrbitControls />
 							<Preload all />
 						</Suspense>
@@ -97,10 +94,8 @@ export default function Home() {
 						diceProps={{ sides, material, rigidness }}
 						onSubmit={handleDicePropFormSubmit}
 					/>
-					<Button onPointerDown={handleDiceRoll} disabled={isDiceRolling}>
-						Roll
-					</Button>
-					<Button>Reset</Button>
+					<Button onPointerDown={handleDiceRoll}>Roll</Button>
+					<Button onPointerDown={handleWorldReset}>Reset</Button>
 				</div>
 			</main>
 			<footer></footer>

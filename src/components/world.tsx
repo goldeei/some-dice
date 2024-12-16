@@ -1,5 +1,4 @@
-import { useResetWorld } from "@/hooks/useResetWorld";
-import { useEffect } from "react";
+import { Physics } from "@react-three/rapier";
 
 import { Dice } from "./dice";
 import { Environment } from "./environment";
@@ -11,16 +10,10 @@ type WorldProps = {
 export const World = ({ ...props }: WorldProps) => {
 	const { worldResetTrigger, isDiceRolling } = props;
 
-	// const { resetBodies } = useResetWorld();
-
-	// useEffect(() => {
-	// 	resetBodies();
-	// }, [resetBodies, worldResetTrigger]);
-
 	return (
-		<>
-			<Dice shouldDiceRoll={isDiceRolling} />
+		<Physics>
+			<Dice shouldDiceRoll={isDiceRolling} shouldReset={worldResetTrigger} />
 			<Environment />
-		</>
+		</Physics>
 	);
 };

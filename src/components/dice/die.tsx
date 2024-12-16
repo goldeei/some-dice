@@ -10,15 +10,10 @@ type Die = RigidBodyProps & {
 	color?: string;
 };
 export const Die = ({ ...props }: Die) => {
-	const { color = "lightgrey", ref, gravityScale, position } = props;
+	const { color = "lightgrey", ref, position } = props;
 
 	return (
-		<RigidBody
-			ref={ref}
-			density={1.5}
-			gravityScale={gravityScale}
-			position={position}
-		>
+		<RigidBody ref={ref} density={1.5} position={position}>
 			<RoundedBox args={[0.25, 0.25, 0.25]} position={position}>
 				<meshStandardMaterial color={color} />
 			</RoundedBox>
