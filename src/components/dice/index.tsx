@@ -1,4 +1,4 @@
-import { ROLL_IMPULSE_MINMAX } from "@/app/constants";
+import { ROLL_ANGVEL_MINMAX, ROLL_IMPULSE_MINMAX } from "@/app/constants";
 import { randomBetweenOneAndZero } from "@/lib";
 import { RapierRigidBody, useRapier } from "@react-three/rapier";
 import { useEffect, useRef } from "react";
@@ -96,6 +96,19 @@ export const Dice = ({ ...props }: DiceProps) => {
 				if (dieRef) {
 					dieRef.setGravityScale(1, true);
 					dieRef.applyImpulse(impulses, true);
+					const angvelMinMax = randomBetweenOneAndZero(
+						ROLL_ANGVEL_MINMAX.min,
+						ROLL_ANGVEL_MINMAX.max
+					);
+
+					dieRef.setAngvel(
+						{
+							x: angvelMinMax,
+							y: angvelMinMax,
+							z: angvelMinMax,
+						},
+						true
+					);
 				}
 			});
 		}

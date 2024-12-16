@@ -24,3 +24,7 @@ export const ROLL_IMPULSE_MINMAX = {
 		max: -0.1,
 	},
 };
+export const ROLL_ANGVEL_MINMAX = {
+	min: -10,
+	max: 10,
+};
