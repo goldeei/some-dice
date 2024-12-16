@@ -1,26 +1,25 @@
 import { useResetWorld } from "@/hooks/useResetWorld";
-import { RigidBody } from "@react-three/rapier";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { useEffect } from "react";
 
 import { Dice } from "./dice";
 import { Environment } from "./environment";
 
 type WorldProps = {
+	isDiceRolling: boolean;
 	worldResetTrigger: boolean;
-	setIsSimPaused: Dispatch<SetStateAction<boolean>>;
 };
 export const World = ({ ...props }: WorldProps) => {
-	const { worldResetTrigger, setIsSimPaused } = props;
+	const { worldResetTrigger, isDiceRolling } = props;
 
-	const { resetBodies } = useResetWorld(setIsSimPaused);
+	// const { resetBodies } = useResetWorld();
 
-	useEffect(() => {
-		resetBodies();
-	}, [resetBodies, worldResetTrigger]);
+	// useEffect(() => {
+	// 	resetBodies();
+	// }, [resetBodies, worldResetTrigger]);
 
 	return (
 		<>
-			<Dice />
+			<Dice shouldDiceRoll={isDiceRolling} />
 			<Environment />
 		</>
 	);

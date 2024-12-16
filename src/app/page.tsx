@@ -27,15 +27,8 @@ export default function Home() {
 	const [material, setMaterial] = useState(diceDefaults.material);
 	const [rigidness, setRigidness] = useState(diceDefaults.rigidness);
 	const [worldResetTrigger, setWorldResetTrigger] = useState(true);
-	const [worldDidPlay, setWorldDidPlay] = useState(false);
-	const [isSimPaused, setIsSimPaused] = useState(true);
 
-	useEffect(() => {
-		if (!isSimPaused) {
-			setWorldDidPlay(true);
-		}
-	}, [isSimPaused]);
-
+	const [isDiceRolling, setIsDiceRolling] = useState(false);
 	const setDiceProp: {
 		[key in keyof DiceProperties]: React.Dispatch<
 			React.SetStateAction<DiceProperties[key]>
@@ -50,6 +43,9 @@ export default function Home() {
 		() => ({ sides, material, rigidness }),
 		[sides, material, rigidness]
 	);
+	useEffect(() => {
+		console.table(diceProps);
+	}, [diceProps]);
 
 	const handleDicePropChange = <Key extends keyof DiceProperties>(
 		key: Key,
@@ -58,21 +54,17 @@ export default function Home() {
 		setDiceProp[key](value);
 	};
 
-	useEffect(() => {
-		console.log(diceProps);
-	}, [diceProps]);
-
 	const handleDicePropFormSubmit = (values: DiceProperties) =>
 		console.log("Form Submit", values);
 
 	const progress = useProgress();
-	useEffect(() => {
-		console.log(progress);
-	}, [progress]);
+
+	const handleDiceRoll = () => {
+		setIsDiceRolling(true);
+	};
 
 	const handleWorldReset = () => {
 		setWorldResetTrigger(!worldResetTrigger);
-		setWorldDidPlay(false);
 	};
 
 	return (
@@ -90,7 +82,7 @@ export default function Home() {
 							<Physics>
 								<World
 									worldResetTrigger={worldResetTrigger}
-									setIsSimPaused={setIsSimPaused}
+									isDiceRolling={isDiceRolling}
 								/>
 							</Physics>
 							<OrbitControls />
@@ -105,12 +97,10 @@ export default function Home() {
 						diceProps={{ sides, material, rigidness }}
 						onSubmit={handleDicePropFormSubmit}
 					/>
-					<Button onPointerDown={() => setIsSimPaused(!isSimPaused)}>
-						{isSimPaused ? "Play" : "Pause"}
+					<Button onPointerDown={handleDiceRoll} disabled={isDiceRolling}>
+						Roll
 					</Button>
-					<Button onPointerDown={handleWorldReset} disabled={!worldDidPlay}>
-						Reset
-					</Button>
+					<Button>Reset</Button>
 				</div>
 			</main>
 			<footer></footer>
