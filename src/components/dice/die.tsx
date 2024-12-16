@@ -14,7 +14,13 @@ export const Die = ({ ...props }: Die) => {
 
 	return (
 		<RigidBody ref={ref} density={1.5} position={position}>
-			<RoundedBox args={[0.25, 0.25, 0.25]} position={position}>
+			<RoundedBox
+				args={[0.25, 0.25, 0.25]}
+				position={position}
+				radius={0.02}
+				smoothness={5}
+				bevelSegments={4}
+			>
 				<meshStandardMaterial color={color} />
 			</RoundedBox>
 		</RigidBody>
