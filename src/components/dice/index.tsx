@@ -54,7 +54,6 @@ export const Dice = ({ ...props }: DiceProps) => {
 			if (ref) {
 				const pos = originalPos.current[i];
 				const rot = originalRot.current[i];
-				console.log(pos, rot);
 				ref.setTranslation(
 					{
 						x: pos.x,
