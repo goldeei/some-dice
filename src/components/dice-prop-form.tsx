@@ -1,4 +1,4 @@
-import { MATERIALS, RIGIDNESS_MINMAX, SIDE_MINMAX } from "@/app/constants/dice";
+import { MATERIALS, RIGIDNESS_MINMAX, SIDE_MINMAX } from "@/constants/dice";
 import { diceFormSchema } from "@/schemas";
 import { DiceProperties, SetDiceProps } from "@/types/dice";
 import { zodResolver } from "@hookform/resolvers/zod";

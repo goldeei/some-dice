@@ -1,4 +1,4 @@
-import { SIDE_SIZE } from "@/app/constants/environment";
+import { SIDE_SIZE } from "@/constants/environment";
 import { alignBottomToFloor } from "@/lib";
 import { Plane } from "@react-three/drei";
 

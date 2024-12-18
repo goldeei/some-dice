@@ -1,4 +1,4 @@
-import { FLOOR_Y, SIDE_SIZE } from "@/app/constants/environment";
+import { FLOOR_Y, SIDE_SIZE } from "@/constants/environment";
 import { alignBottomToFloor, getRotationArrayFromDegrees } from "@/lib";
 import { Plane } from "@react-three/drei";
 

@@ -1,4 +1,4 @@
-import { FLOOR_Y } from "@/app/constants/environment";
+import { FLOOR_Y } from "@/constants/environment";
 import { RotationArray, RotationMinMax } from "@/types";
 
 // ROTATION
