@@ -3,7 +3,7 @@ import { RollContext } from "@/context/RollContext";
 import { randomBetweenOneAndZero } from "@/lib";
 import { useFrame } from "@react-three/fiber";
 import { RapierRigidBody, useRapier } from "@react-three/rapier";
-import { use, useEffect, useRef } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { Quaternion, Vector3 } from "three";
 import { Vector } from "three/examples/jsm/Addons.js";
 
@@ -19,6 +19,8 @@ export const Dice = ({ ...props }: DiceProps) => {
 
 	const dice = ["dice1", "dice2", "dice3", "dice4", "dice5"];
 	const colors = ["red", "blue", "purple", "yellow", "orange"];
+
+	const [shouldReadSides, setShouldReadSides] = useState(false);
 
 	const diceRefs = useRef<(RapierRigidBody | null)[]>([]);
 	const originalPos = useRef<Vector[]>([]);
@@ -88,7 +90,7 @@ export const Dice = ({ ...props }: DiceProps) => {
 	// Handles the end of a roll if true
 	useEffect(() => {
 		if (currentRollState.didRollFinish) {
-			world.bodies.forEach((body) => {});
+			setShouldReadSides(true);
 		}
 	}, [currentRollState.didRollFinish, world.bodies]);
 
@@ -162,11 +164,13 @@ export const Dice = ({ ...props }: DiceProps) => {
 			{dice.map((_, i) => (
 				<Die
 					key={i}
+					name={`die-${i}`}
 					ref={(die: RapierRigidBody | null) => {
 						diceRefs.current[i] = die;
 					}}
 					position={getOffsetPosition(i)}
 					color={colors[i]}
+					shouldReadSides={shouldReadSides}
 				/>
 			))}
 		</group>
