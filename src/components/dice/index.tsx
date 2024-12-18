@@ -1,18 +1,19 @@
-import { ROLL_ANGVEL_MINMAX, ROLL_IMPULSE_MINMAX } from "@/app/constants";
+import { ROLL_ANGVEL_MINMAX, ROLL_IMPULSE_MINMAX } from "@/constants";
+import { RollContext } from "@/context/RollContext";
 import { randomBetweenOneAndZero } from "@/lib";
+import { useFrame } from "@react-three/fiber";
 import { RapierRigidBody, useRapier } from "@react-three/rapier";
-import { useEffect, useRef } from "react";
+import { use, useEffect, useRef } from "react";
 import { Quaternion, Vector3 } from "three";
 import { Vector } from "three/examples/jsm/Addons.js";
 
 import { Die } from "./die";
 
 interface DiceProps {
-	shouldDiceRoll: boolean;
 	shouldReset: boolean;
 }
 export const Dice = ({ ...props }: DiceProps) => {
-	const { shouldDiceRoll, shouldReset } = props;
+	const { shouldReset } = props;
 
 	const { world } = useRapier();
 
@@ -45,9 +46,51 @@ export const Dice = ({ ...props }: DiceProps) => {
 		});
 	}, []);
 
+	const { currentRollState, setCurrentRollState } = use(RollContext);
+
+	useFrame(() => {
+		if (!currentRollState.isRolling) return;
+		console.log("Roll Started!");
+
+		let allDoneRolling = true;
+
+		world.bodies.forEach((body) => {
+			const vel = body.linvel();
+			const angVel = body.angvel();
+
+			const allVel = { ...vel, ...angVel };
+
+			if (Object.values(allVel).some((v) => v > 0.1)) {
+				allDoneRolling = false;
+			}
+		});
+
+		if (allDoneRolling) {
+			setCurrentRollState({
+				...currentRollState,
+				isRolling: false,
+				didRollFinish: true,
+			});
+			console.log("Roll Done!");
+		}
+		return null;
+	});
+
+	// Fires on isRolling state change
+	// We roll if true
 	useEffect(() => {
-		handleRoll();
-	}, [shouldDiceRoll]);
+		if (currentRollState.isRolling) {
+			handleRoll();
+		}
+	}, [currentRollState.isRolling]);
+
+	// Fires on roll finish state change
+	// Handles the end of a roll if true
+	useEffect(() => {
+		if (currentRollState.didRollFinish) {
+			world.bodies.forEach((body) => {});
+		}
+	}, [currentRollState.didRollFinish, world.bodies]);
 
 	useEffect(() => {
 		diceRefs.current.forEach((ref, i) => {

@@ -3,6 +3,7 @@
 import DicePropForm from "@/components/dice-prop-form";
 import { Button } from "@/components/ui/button";
 import { World } from "@/components/world";
+import { RollContext } from "@/context/RollContext";
 import { DiceProperties } from "@/types";
 import {
 	Environment,
@@ -11,9 +12,9 @@ import {
 	useProgress,
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, use, useEffect, useMemo, useState } from "react";
 
-import { MATERIALS } from "./constants/dice";
+import { MATERIALS } from "../constants/dice";
 
 export default function Home() {
 	const diceDefaults = {
@@ -27,7 +28,6 @@ export default function Home() {
 	const [rigidness, setRigidness] = useState(diceDefaults.rigidness);
 	const [worldResetTrigger, setWorldResetTrigger] = useState(true);
 
-	const [isDiceRolling, setIsDiceRolling] = useState(false);
 	const setDiceProp: {
 		[key in keyof DiceProperties]: React.Dispatch<
 			React.SetStateAction<DiceProperties[key]>
@@ -58,12 +58,22 @@ export default function Home() {
 
 	const progress = useProgress();
 
+	const { currentRollState, setCurrentRollState } = use(RollContext);
 	const handleDiceRoll = () => {
-		setIsDiceRolling(!isDiceRolling);
+		setCurrentRollState({
+			...currentRollState,
+			isFresh: false,
+			isRolling: true,
+		});
 	};
 
 	const handleWorldReset = () => {
 		setWorldResetTrigger(!worldResetTrigger);
+		setCurrentRollState({
+			...currentRollState,
+			isFresh: true,
+			isRolling: false,
+		});
 	};
 
 	return (
@@ -78,10 +88,7 @@ export default function Home() {
 					<Canvas fallback={<div>Sorry no WebGL supported!</div>}>
 						<Suspense fallback={null}>
 							<Environment preset="sunset" />
-							<World
-								worldResetTrigger={worldResetTrigger}
-								isDiceRolling={isDiceRolling}
-							/>
+							<World worldResetTrigger={worldResetTrigger} />
 							<OrbitControls />
 							<Preload all />
 						</Suspense>
@@ -94,8 +101,18 @@ export default function Home() {
 						diceProps={{ sides, material, rigidness }}
 						onSubmit={handleDicePropFormSubmit}
 					/>
-					<Button onPointerDown={handleDiceRoll}>Roll</Button>
-					<Button onPointerDown={handleWorldReset}>Reset</Button>
+					<Button
+						onPointerDown={handleDiceRoll}
+						disabled={currentRollState.isRolling}
+					>
+						Roll
+					</Button>
+					<Button
+						onPointerDown={handleWorldReset}
+						disabled={currentRollState.isFresh}
+					>
+						Reset
+					</Button>
 				</div>
 			</main>
 			<footer></footer>
