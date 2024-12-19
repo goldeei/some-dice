@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 
 type DiceRollingState = {
 	isFresh: boolean;
@@ -33,6 +33,10 @@ export const RollContextProvider = ({
 		didRollFinish: false,
 		rollResult: {},
 	});
+
+	useEffect(() => {
+		console.table(currentRollState);
+	}, [currentRollState]);
 
 	return (
 		<RollContext value={{ currentRollState, setCurrentRollState }}>
