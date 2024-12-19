@@ -3,6 +3,7 @@
 import DicePropForm from "@/components/dice-prop-form";
 import { Button } from "@/components/ui/button";
 import { World } from "@/components/world";
+import { DicePropsContext } from "@/context/DicePropsContext";
 import { RollContext } from "@/context/RollContext";
 import { DiceProperties } from "@/types";
 import {
@@ -18,7 +19,7 @@ import { MATERIALS } from "../constants/dice";
 
 export default function Home() {
 	const diceDefaults = {
-		sides: 4,
+		sides: 6,
 		material: MATERIALS[0],
 		rigidness: 50,
 	};
@@ -46,11 +47,14 @@ export default function Home() {
 		console.table(diceProps);
 	}, [diceProps]);
 
+	const { currentDiceProps, setCurrentDiceProps } = use(DicePropsContext);
+
 	const handleDicePropChange = <Key extends keyof DiceProperties>(
 		key: Key,
 		value: DiceProperties[Key]
 	) => {
 		setDiceProp[key](value);
+		setCurrentDiceProps({ ...currentDiceProps, [key]: value });
 	};
 
 	const handleDicePropFormSubmit = (values: DiceProperties) =>
