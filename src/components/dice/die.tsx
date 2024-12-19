@@ -1,22 +1,72 @@
-import { RoundedBox } from "@react-three/drei";
+import { SideCount } from "@/types";
 import {
 	RapierRigidBody,
 	RigidBody,
 	RigidBodyProps,
 } from "@react-three/rapier";
-import { useEffect, useRef } from "react";
-import { Mesh } from "three";
+import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+
+interface DieShapeProps {
+	sideCount: number;
+	children: React.ReactElement<THREE.MeshStandardMaterial>;
+	size: number;
+}
+const DieShape = ({ sideCount, children, size }: DieShapeProps) => {
+	const meshRef = useRef<THREE.Mesh>(null);
+
+	useEffect(() => {
+		let g: THREE.BufferGeometry;
+		switch (sideCount) {
+			case 2:
+				g = new THREE.CylinderGeometry(size, size, size * 0.1);
+				break;
+			case 6:
+				g = new THREE.BoxGeometry(size, size, size);
+				break;
+			case 8:
+				g = new THREE.OctahedronGeometry(size);
+
+				break;
+			case 10:
+				g = new THREE.DodecahedronGeometry(size);
+
+				break;
+			case 20:
+				g = new THREE.IcosahedronGeometry(size);
+				break;
+			default:
+				g = new THREE.TetrahedronGeometry(size);
+				break;
+		}
+		if (meshRef.current) {
+			meshRef.current.geometry = g;
+		}
+	}, [sideCount, size]);
+
+	return <mesh ref={meshRef}>{children}</mesh>;
+};
 
 type Die = RigidBodyProps & {
-	ref: (die: RapierRigidBody | null) => void;
+	setDieRef: (die: RapierRigidBody) => void;
 	shouldReadSides: boolean;
+	sides: SideCount;
 	color?: string;
 };
 export const Die = ({ ...props }: Die) => {
-	const { color = "lightgrey", ref, position, shouldReadSides, name } = props;
-	const meshRef = useRef<Mesh>(null);
+	const {
+		color = "lightgrey",
+		setDieRef,
+		position,
+		shouldReadSides,
+		name,
+		sides = 3,
+	} = props;
+	const meshRef = useRef<THREE.Mesh>(null);
+	const rigidBodyRef = useRef<RapierRigidBody>(null);
 
 	useEffect(() => {
+		console.log("uh");
 		if (meshRef.current && shouldReadSides) {
 			const geo = meshRef.current.geometry;
 			const vertices = geo.attributes.position.array;
@@ -25,18 +75,34 @@ export const Die = ({ ...props }: Die) => {
 		}
 	}, [name, shouldReadSides]);
 
+	useEffect(() => {
+		if (rigidBodyRef.current) {
+			setDieRef(rigidBodyRef.current);
+		}
+	}, [setDieRef]);
+
+	const size = 0.25;
+
+	const [key, setKey] = useState(0);
+	useEffect(() => {
+		setKey((prevKey) => prevKey + 1);
+		if (rigidBodyRef.current) {
+			console.log(rigidBodyRef.current);
+		}
+	}, [sides, size]);
+
 	return (
-		<RigidBody ref={ref} density={1.5} position={position}>
-			<RoundedBox
-				ref={meshRef}
-				args={[0.25, 0.25, 0.25]}
-				position={position}
-				radius={0.02}
-				smoothness={5}
-				bevelSegments={4}
-			>
+		<RigidBody
+			key={key}
+			ref={rigidBodyRef}
+			colliders="hull"
+			position={position}
+			gravityScale={0}
+			density={1.25}
+		>
+			<DieShape sideCount={sides} size={size}>
 				<meshStandardMaterial color={color} />
-			</RoundedBox>
+			</DieShape>
 		</RigidBody>
 	);
 };
