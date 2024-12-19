@@ -1,9 +1,10 @@
 import { ROLL_ANGVEL_MINMAX, ROLL_IMPULSE_MINMAX } from "@/constants";
+import { DicePropsContext } from "@/context/DicePropsContext";
 import { RollContext } from "@/context/RollContext";
 import { randomBetweenOneAndZero } from "@/lib";
 import { useFrame } from "@react-three/fiber";
 import { RapierRigidBody, useRapier } from "@react-three/rapier";
-import { use, useEffect, useRef, useState } from "react";
+import { use, useCallback, useEffect, useRef, useState } from "react";
 import { Quaternion, Vector3 } from "three";
 import { Vector } from "three/examples/jsm/Addons.js";
 
@@ -17,12 +18,19 @@ export const Dice = ({ ...props }: DiceProps) => {
 
 	const { world } = useRapier();
 
-	const dice = ["dice1", "dice2", "dice3", "dice4", "dice5"];
+	const dice = ["dice1", "dice2"];
 	const colors = ["red", "blue", "purple", "yellow", "orange"];
 
 	const [shouldReadSides, setShouldReadSides] = useState(false);
 
 	const diceRefs = useRef<(RapierRigidBody | null)[]>([]);
+	const setDieRef = useCallback(
+		(i: number) => (die: RapierRigidBody) => {
+			diceRefs.current[i] = die;
+		},
+		[]
+	);
+
 	const originalPos = useRef<Vector[]>([]);
 	const originalRot = useRef<Quaternion[]>([]);
 
@@ -122,7 +130,6 @@ export const Dice = ({ ...props }: DiceProps) => {
 				ref.wakeUp();
 			}
 		});
-		// world.step();
 	}, [shouldReset, world]);
 
 	const handleRoll = () => {
@@ -159,18 +166,22 @@ export const Dice = ({ ...props }: DiceProps) => {
 		}
 	};
 
+	const diceProps = use(DicePropsContext);
+	useEffect(() => {
+		console.log(diceProps);
+	}, [diceProps]);
+
 	return (
 		<group name="dice" onClick={handleRoll}>
 			{dice.map((_, i) => (
 				<Die
 					key={i}
 					name={`die-${i}`}
-					ref={(die: RapierRigidBody | null) => {
-						diceRefs.current[i] = die;
-					}}
+					setDieRef={setDieRef(i)}
 					position={getOffsetPosition(i)}
 					color={colors[i]}
 					shouldReadSides={shouldReadSides}
+					sides={diceProps.currentDiceProps.sides}
 				/>
 			))}
 		</group>
