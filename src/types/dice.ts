@@ -9,3 +9,5 @@ export type SetDiceProps = (
 	key: DicePropertyKeys,
 	value: number | string
 ) => void;
+
+export type SideCount = 2 | 6 | 8 | 10 | 20;
