@@ -81,7 +81,7 @@ export const Dice = ({ ...props }: DiceProps) => {
 				isRolling: false,
 				didRollFinish: true,
 			});
-			console.log("Roll Done!");
+			setShouldReadSides(true);
 		}
 		return null;
 	});
@@ -94,15 +94,7 @@ export const Dice = ({ ...props }: DiceProps) => {
 		}
 	}, [currentRollState.isRolling]);
 
-	// Fires on roll finish state change
-	// Handles the end of a roll if true
-	useEffect(() => {
-		if (currentRollState.didRollFinish) {
-			setShouldReadSides(true);
-		}
-	}, [currentRollState.didRollFinish, world.bodies]);
-
-	useEffect(() => {
+	const handleReset = useCallback(() => {
 		diceRefs.current.forEach((ref, i) => {
 			if (ref) {
 				const pos = originalPos.current[i];
@@ -130,7 +122,12 @@ export const Dice = ({ ...props }: DiceProps) => {
 				ref.wakeUp();
 			}
 		});
-	}, [shouldReset, world]);
+		setShouldReadSides(false);
+	}, []);
+
+	useEffect(() => {
+		handleReset();
+	}, [handleReset, shouldReset]);
 
 	const handleRoll = () => {
 		if (diceRefs.current) {
