@@ -10,7 +10,7 @@ export const World = ({ ...props }: WorldProps) => {
 	const { worldResetTrigger } = props;
 
 	return (
-		<Physics>
+		<Physics debug>
 			<Dice shouldReset={worldResetTrigger} />
 			<Environment />
 		</Physics>
