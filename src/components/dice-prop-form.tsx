@@ -1,4 +1,4 @@
-import { MATERIALS, RIGIDNESS_MINMAX, SIDE_MINMAX } from "@/constants/dice";
+import { MATERIALS, RIGIDNESS_MINMAX } from "@/constants/dice";
 import { diceFormSchema } from "@/schemas";
 import { DiceProperties, SetDiceProps } from "@/types/dice";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,16 +61,29 @@ const DicePropForm = ({ ...props }: DicePropFormProps) => {
 				<FormField
 					control={form.control}
 					name="sides"
-					render={({ field: { name, onChange } }) => (
+					render={({ field: { name, value, onChange } }) => (
 						<FormItem>
 							<FormLabel>Sides {diceProps[name]}</FormLabel>
 							<FormControl>
-								<NumericSlider
-									min={SIDE_MINMAX.min}
-									max={SIDE_MINMAX.max}
-									step={2}
-									onValueChange={onChange}
-								/>
+								<RadioGroup
+									defaultValue={value.toString()}
+									onValueChange={(v) => onChange(Number(v))}
+								>
+									{[2, 3, 6, 8, 10, 20].map((sideCount) => (
+										<div key={`side-count-radio-${sideCount}`}>
+											<RadioGroupItem
+												value={`${sideCount}`}
+												id={`side-count-radio-${sideCount}`}
+											/>
+											<Label
+												htmlFor={`side-count-radio-${sideCount}`}
+												className="cursor-pointer"
+											>
+												{sideCount}
+											</Label>
+										</div>
+									))}
+								</RadioGroup>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
