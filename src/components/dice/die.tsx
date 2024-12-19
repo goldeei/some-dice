@@ -11,10 +11,9 @@ interface DieShapeProps {
 	sideCount: number;
 	children: React.ReactElement<THREE.MeshStandardMaterial>;
 	size: number;
+	meshRef: React.RefObject<THREE.Mesh | null>;
 }
-const DieShape = ({ sideCount, children, size }: DieShapeProps) => {
-	const meshRef = useRef<THREE.Mesh>(null);
-
+const DieShape = ({ sideCount, children, size, meshRef }: DieShapeProps) => {
 	useEffect(() => {
 		let g: THREE.BufferGeometry;
 		switch (sideCount) {
@@ -42,7 +41,7 @@ const DieShape = ({ sideCount, children, size }: DieShapeProps) => {
 		if (meshRef.current) {
 			meshRef.current.geometry = g;
 		}
-	}, [sideCount, size]);
+	}, [meshRef, sideCount, size]);
 
 	return <mesh ref={meshRef}>{children}</mesh>;
 };
@@ -66,12 +65,8 @@ export const Die = ({ ...props }: Die) => {
 	const rigidBodyRef = useRef<RapierRigidBody>(null);
 
 	useEffect(() => {
-		console.log("uh");
-		if (meshRef.current && shouldReadSides) {
-			const geo = meshRef.current.geometry;
-			const vertices = geo.attributes.position.array;
-
-			console.log(name, vertices);
+		if (rigidBodyRef.current && shouldReadSides) {
+			console.log(rigidBodyRef.current.collider(0).shape);
 		}
 	}, [name, shouldReadSides]);
 
@@ -100,7 +95,7 @@ export const Die = ({ ...props }: Die) => {
 			gravityScale={0}
 			density={1.25}
 		>
-			<DieShape sideCount={sides} size={size}>
+			<DieShape meshRef={meshRef} sideCount={sides} size={size}>
 				<meshStandardMaterial color={color} />
 			</DieShape>
 		</RigidBody>
