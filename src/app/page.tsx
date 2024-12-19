@@ -77,6 +77,7 @@ export default function Home() {
 			...currentRollState,
 			isFresh: true,
 			isRolling: false,
+			didRollFinish: false,
 		});
 	};
 
