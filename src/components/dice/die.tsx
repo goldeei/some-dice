@@ -1,4 +1,5 @@
-import { SideCount } from "@/types";
+import { getGeometryFacesAttributes } from "@/lib/get-geometry-faces-attributes";
+import { FaceAttributes, SideCountOptions } from "@/types";
 import {
 	RapierRigidBody,
 	RigidBody,
@@ -8,12 +9,17 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 interface DieShapeProps {
-	sideCount: number;
+	sideCount: SideCountOptions;
 	children: React.ReactElement<THREE.MeshStandardMaterial>;
 	size: number;
 	meshRef: React.RefObject<THREE.Mesh | null>;
 }
-const DieShape = ({ sideCount, children, size, meshRef }: DieShapeProps) => {
+export const DieShape = ({
+	sideCount,
+	children,
+	size,
+	meshRef,
+}: DieShapeProps) => {
 	useEffect(() => {
 		let g: THREE.BufferGeometry;
 		switch (sideCount) {
@@ -49,7 +55,7 @@ const DieShape = ({ sideCount, children, size, meshRef }: DieShapeProps) => {
 type Die = RigidBodyProps & {
 	setDieRef: (die: RapierRigidBody) => void;
 	shouldReadSides: boolean;
-	sides: SideCount;
+	sides: SideCountOptions;
 	color?: string;
 };
 export const Die = ({ ...props }: Die) => {
@@ -59,7 +65,7 @@ export const Die = ({ ...props }: Die) => {
 		position,
 		shouldReadSides,
 		name,
-		sides = 3,
+		sides = 6,
 	} = props;
 	const meshRef = useRef<THREE.Mesh>(null);
 	const rigidBodyRef = useRef<RapierRigidBody>(null);
@@ -79,12 +85,19 @@ export const Die = ({ ...props }: Die) => {
 	const size = 0.25;
 
 	const [key, setKey] = useState(0);
+	const [faces, setFaces] = useState<FaceAttributes[]>([]);
 	useEffect(() => {
 		setKey((prevKey) => prevKey + 1);
-		if (rigidBodyRef.current) {
-			console.log(rigidBodyRef.current);
+		if (rigidBodyRef.current && meshRef.current) {
+			setFaces(getGeometryFacesAttributes(meshRef.current.geometry, sides));
 		}
 	}, [sides, size]);
+
+	useEffect(() => {
+		if (faces) {
+			console.table(faces);
+		}
+	}, [faces]);
 
 	return (
 		<RigidBody
