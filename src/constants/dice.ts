@@ -53,8 +53,8 @@ export const DICE_SHAPE_BY_SIDE_COUNT: Record<
 	4: { geo: TetrahedronGeometry, trianglesPerFace: 1 },
 	6: { geo: BoxGeometry, trianglesPerFace: 2 },
 	8: { geo: OctahedronGeometry, trianglesPerFace: 1 },
-	10: { geo: DodecahedronGeometry, trianglesPerFace: 3 },
+	12: { geo: DodecahedronGeometry, trianglesPerFace: 3 },
 	20: { geo: IcosahedronGeometry, trianglesPerFace: 1 },
 };
 
-export const SIDE_COUNT_OPTIONS = [4, 6, 8, 10, 20];
+export const SIDE_COUNT_OPTIONS = [4, 6, 8, 12, 20];
