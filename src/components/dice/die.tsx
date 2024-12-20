@@ -31,7 +31,7 @@ export const Die = ({ ...props }: Die) => {
 
 	useEffect(() => {
 		if (rigidBodyRef.current && shouldReadSides) {
-			console.log(rigidBodyRef.current.collider(0).shape);
+			// console.log(rigidBodyRef.current.collider(0).shape);
 		}
 	}, [name, shouldReadSides]);
 
@@ -48,7 +48,7 @@ export const Die = ({ ...props }: Die) => {
 	useEffect(() => {
 		setKey((prevKey) => prevKey + 1);
 		if (rigidBodyRef.current && meshRef.current) {
-			setFaces(getGeometryFacesAttributes(meshRef.current.geometry, sides));
+			setFaces(getGeometryFacesAttributes(meshRef.current, sides));
 		}
 	}, [sides, size]);
 
