@@ -1,25 +1,29 @@
 import { DICE_SHAPE_BY_SIDE_COUNT } from "@/constants";
 import { VERTICES_PER_TRIANGLE } from "@/constants/3d";
-import { FaceAttributes, SideCountOptions } from "@/types";
-import { BufferGeometry, NormalBufferAttributes } from "three";
+import { FaceAttributes, FaceGetterParams, SideCountOptions } from "@/types";
+import { BufferGeometry, Mesh, NormalBufferAttributes } from "three";
 
 import { getIndexedFacesAttributes } from "./getIndexedFacesAttributes";
 import { getNonIndexedFacesAttributes } from "./getNonIndexedFacesAttributes";
 
 export const getGeometryFacesAttributes = (
-	geometry: BufferGeometry<NormalBufferAttributes>,
+	mesh: Mesh,
 	sideCount: SideCountOptions
 ): FaceAttributes[] => {
+	const { geometry, rotation } = mesh;
+
 	const trianglesPerFace = DICE_SHAPE_BY_SIDE_COUNT[sideCount].trianglesPerFace,
 		positions = geometry.attributes.position.array,
 		indices = geometry.index ? geometry.index.array : null,
 		faces: FaceAttributes[] = [],
 		vertsPerFace = trianglesPerFace * VERTICES_PER_TRIANGLE;
 
+	console.log(rotation);
+	const params: FaceGetterParams = [vertsPerFace, positions, faces, rotation];
 	if (indices) {
-		getIndexedFacesAttributes(indices, vertsPerFace, positions, faces);
+		getIndexedFacesAttributes(indices, ...params);
 	} else {
-		getNonIndexedFacesAttributes(vertsPerFace, positions, faces);
+		getNonIndexedFacesAttributes(...params);
 	}
 
 	return faces;

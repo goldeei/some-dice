@@ -1,4 +1,4 @@
-import { TypedArray } from "three";
+import { Euler, TypedArray } from "three";
 import { Vector } from "three/examples/jsm/Addons.js";
 
 import { IntRange } from "./utils";
@@ -13,10 +13,11 @@ export type PositionArray = [number, number, number];
 // FACES
 export type FaceAttributes = { id: number; centerPos: Vector };
 
-type FaceGetterParams = [
+export type FaceGetterParams = [
 	vertsPerFace: number,
 	positions: TypedArray,
-	faces: FaceAttributes[]
+	faces: FaceAttributes[],
+	rotation: Euler
 ];
 export type FaceGetterFunction<T extends "indexed" | "non-indexed"> =
 	T extends "indexed"
