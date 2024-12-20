@@ -48,13 +48,34 @@ export const DICE_SHAPE_BY_SIDE_COUNT: Record<
 	{
 		geo: new (...args: any[]) => BufferGeometry;
 		trianglesPerFace: number;
+		setArgs: (size: number) => number[];
 	}
 > = {
-	4: { geo: TetrahedronGeometry, trianglesPerFace: 1 },
-	6: { geo: BoxGeometry, trianglesPerFace: 2 },
-	8: { geo: OctahedronGeometry, trianglesPerFace: 1 },
-	12: { geo: DodecahedronGeometry, trianglesPerFace: 3 },
-	20: { geo: IcosahedronGeometry, trianglesPerFace: 1 },
+	4: {
+		geo: TetrahedronGeometry,
+		trianglesPerFace: 1,
+		setArgs: (size: number) => [size],
+	},
+	6: {
+		geo: BoxGeometry,
+		trianglesPerFace: 2,
+		setArgs: (size: number) => [size, size, size],
+	},
+	8: {
+		geo: OctahedronGeometry,
+		trianglesPerFace: 1,
+		setArgs: (size: number) => [size],
+	},
+	12: {
+		geo: DodecahedronGeometry,
+		trianglesPerFace: 3,
+		setArgs: (size: number) => [size],
+	},
+	20: {
+		geo: IcosahedronGeometry,
+		trianglesPerFace: 1,
+		setArgs: (size: number) => [size],
+	},
 };
 
 export const SIDE_COUNT_OPTIONS = [4, 6, 8, 12, 20];

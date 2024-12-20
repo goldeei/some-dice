@@ -1,3 +1,4 @@
+import { DICE_SHAPE_BY_SIDE_COUNT } from "@/constants";
 import { getGeometryFacesAttributes } from "@/lib/get-geometry-faces-attributes";
 import { FaceAttributes, SideCountOptions } from "@/types";
 import {
@@ -7,50 +8,6 @@ import {
 } from "@react-three/rapier";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-
-interface DieShapeProps {
-	sideCount: SideCountOptions;
-	children: React.ReactElement<THREE.MeshStandardMaterial>;
-	size: number;
-	meshRef: React.RefObject<THREE.Mesh | null>;
-}
-export const DieShape = ({
-	sideCount,
-	children,
-	size,
-	meshRef,
-}: DieShapeProps) => {
-	useEffect(() => {
-		let g: THREE.BufferGeometry;
-		switch (sideCount) {
-			case 2:
-				g = new THREE.CylinderGeometry(size, size, size * 0.1);
-				break;
-			case 6:
-				g = new THREE.BoxGeometry(size, size, size);
-				break;
-			case 8:
-				g = new THREE.OctahedronGeometry(size);
-
-				break;
-			case 10:
-				g = new THREE.DodecahedronGeometry(size);
-
-				break;
-			case 20:
-				g = new THREE.IcosahedronGeometry(size);
-				break;
-			default:
-				g = new THREE.TetrahedronGeometry(size);
-				break;
-		}
-		if (meshRef.current) {
-			meshRef.current.geometry = g;
-		}
-	}, [meshRef, sideCount, size]);
-
-	return <mesh ref={meshRef}>{children}</mesh>;
-};
 
 type Die = RigidBodyProps & {
 	setDieRef: (die: RapierRigidBody) => void;
@@ -99,6 +56,9 @@ export const Die = ({ ...props }: Die) => {
 		}
 	}, [faces]);
 
+	const geometryProps = DICE_SHAPE_BY_SIDE_COUNT[sides];
+	const geometry = new geometryProps.geo(...geometryProps.setArgs(size));
+
 	return (
 		<RigidBody
 			key={key}
@@ -108,9 +68,9 @@ export const Die = ({ ...props }: Die) => {
 			gravityScale={0}
 			density={1.25}
 		>
-			<DieShape meshRef={meshRef} sideCount={sides} size={size}>
+			<mesh ref={meshRef} geometry={geometry} position={position}>
 				<meshStandardMaterial color={color} />
-			</DieShape>
+			</mesh>
 		</RigidBody>
 	);
 };
