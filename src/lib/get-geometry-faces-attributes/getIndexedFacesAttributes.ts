@@ -1,5 +1,4 @@
-import { FaceAttributes, FaceGetterFunction } from "@/types";
-import { TypedArray } from "three";
+import { FaceGetterFunction } from "@/types";
 
 export const getIndexedFacesAttributes: FaceGetterFunction<"indexed"> = (
 	indices,
@@ -24,6 +23,6 @@ export const getIndexedFacesAttributes: FaceGetterFunction<"indexed"> = (
 		y /= faceIndices.length;
 		z /= faceIndices.length;
 
-		faces.push({ id: i / vertsPerFace / 3, centerPos: { x, y, z } });
+		faces.push({ id: faces.length + 1, centerPos: { x, y, z } });
 	}
 };

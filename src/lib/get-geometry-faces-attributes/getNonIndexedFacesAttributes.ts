@@ -21,6 +21,6 @@ export const getNonIndexedFacesAttributes: FaceGetterFunction<"non-indexed"> = (
 		y /= vertsPerFace;
 		z /= vertsPerFace;
 
-		faces.push({ id: i / vertsPerFace / 3 + 1, centerPos: { x, y, z } });
+		faces.push({ id: faces.length + 1, centerPos: { x, y, z } });
 	}
 };
