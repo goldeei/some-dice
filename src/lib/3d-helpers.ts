@@ -1,6 +1,6 @@
 import { DICE_SHAPE_BY_SIDE_COUNT } from "@/constants";
 import { FLOOR_Y } from "@/constants/environment";
-import { RotationArray, RotationMinMax, SideCount } from "@/types";
+import { RotationArray, RotationMinMax } from "@/types";
 import { BufferGeometry, Mesh, NormalBufferAttributes } from "three";
 import { Vector } from "three/examples/jsm/Addons.js";
 
@@ -50,65 +50,3 @@ export const getRotationArrayFromDegrees = (rotArr: RotationArray) => {
 };
 
 export const alignBottomToFloor = (size: number) => size / 2 + FLOOR_Y;
-
-export const getFaceInfo = (
-	geometry: BufferGeometry<NormalBufferAttributes>,
-	sideCount: SideCount
-): {
-	id: number;
-	centerPos: Vector;
-}[] => {
-	const trianglesPerFace = DICE_SHAPE_BY_SIDE_COUNT[sideCount].trianglesPerFace;
-
-	const positions = geometry.attributes.position.array;
-	const indices = geometry.index ? geometry.index.array : [];
-
-	const vertsPerTriangle = 3;
-	// We get this number to be able to identify the chunks to break the positions array into
-	const vertsPerFace = trianglesPerFace * vertsPerTriangle;
-
-	const faces: { id: number; centerPos: Vector }[] = [];
-
-	// Handle indexed geometry (like cubes)
-	if (indices.length > 0) {
-		for (let i = 0; i < indices.length; i += vertsPerFace) {
-			const faceIndices = indices.slice(i, i + vertsPerFace);
-
-			let x = 0,
-				y = 0,
-				z = 0;
-			for (let j = 0; j < faceIndices.length; j++) {
-				const index = faceIndices[j];
-				x += positions[index * 3];
-				y += positions[index * 3 + 1];
-				z += positions[index * 3 + 2];
-			}
-
-			x /= faceIndices.length;
-			y /= faceIndices.length;
-			z /= faceIndices.length;
-
-			faces.push({ id: i / vertsPerFace / 3, centerPos: { x, y, z } });
-		}
-	} else {
-		for (let i = 0; i < positions.length; i += vertsPerFace * 3) {
-			const faceVerts = positions.slice(i, i + vertsPerFace * 3);
-
-			let x = 0,
-				y = 0,
-				z = 0;
-			for (let j = 0; j < vertsPerFace; j++) {
-				x += faceVerts[j * 3];
-				y += faceVerts[j * 3 + 1];
-				z += faceVerts[j * 3 + 2];
-			}
-
-			x /= vertsPerFace;
-			y /= vertsPerFace;
-			z /= vertsPerFace;
-
-			faces.push({ id: i / vertsPerFace / 3 + 1, centerPos: { x, y, z } });
-		}
-	}
-	return faces;
-};
