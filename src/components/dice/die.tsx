@@ -1,7 +1,9 @@
 import { DICE_SHAPE_BY_SIDE_COUNT } from "@/constants";
 import { getGeometryFacesAttributes } from "@/lib/get-geometry-faces-attributes";
 import { FaceAttributes, SideCountOptions } from "@/types";
+import { Text } from "@react-three/drei";
 import {
+	MeshCollider,
 	RapierRigidBody,
 	RigidBody,
 	RigidBodyProps,
@@ -63,14 +65,24 @@ export const Die = ({ ...props }: Die) => {
 		<RigidBody
 			key={key}
 			ref={rigidBodyRef}
-			colliders="hull"
 			position={position}
 			gravityScale={0}
 			density={1.25}
 		>
-			<mesh ref={meshRef} geometry={geometry} position={position}>
-				<meshStandardMaterial color={color} />
-			</mesh>
+			<MeshCollider type="hull">
+				<mesh ref={meshRef} geometry={geometry} position={position}>
+					<meshStandardMaterial color={color} />
+				</mesh>
+			</MeshCollider>
+			{faces.map((face, i) => (
+				<Text
+					position={[face.centerPos.x, face.centerPos.y, face.centerPos.z]}
+					fontSize={0.1}
+					key={`${name}|face-${i}|label`}
+				>
+					{face.id}
+				</Text>
+			))}
 		</RigidBody>
 	);
 };
