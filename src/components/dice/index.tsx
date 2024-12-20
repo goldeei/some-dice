@@ -18,7 +18,7 @@ export const Dice = ({ ...props }: DiceProps) => {
 
 	const { world } = useRapier();
 
-	const dice = ["dice1", "dice2"];
+	const dice = ["dice1"];
 	const colors = ["red", "blue", "purple", "yellow", "orange"];
 
 	const [shouldReadSides, setShouldReadSides] = useState(false);
