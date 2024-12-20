@@ -1,4 +1,8 @@
-import { MATERIALS, RIGIDNESS_MINMAX } from "@/constants/dice";
+import {
+	MATERIALS,
+	RIGIDNESS_MINMAX,
+	SIDE_COUNT_OPTIONS,
+} from "@/constants/dice";
 import { diceFormSchema } from "@/schemas";
 import { DiceProperties, SetDiceProps } from "@/types/dice";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -69,7 +73,7 @@ const DicePropForm = ({ ...props }: DicePropFormProps) => {
 									defaultValue={value.toString()}
 									onValueChange={(v) => onChange(Number(v))}
 								>
-									{[2, 3, 6, 8, 10, 20].map((sideCount) => (
+									{SIDE_COUNT_OPTIONS.map((sideCount) => (
 										<div key={`side-count-radio-${sideCount}`}>
 											<RadioGroupItem
 												value={`${sideCount}`}

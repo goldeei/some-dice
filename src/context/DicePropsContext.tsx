@@ -1,9 +1,9 @@
 "use client";
-import { SideCount } from "@/types";
+import { SideCountOptions } from "@/types";
 import React, { createContext, useState } from "react";
 
 type DiceProps = {
-	sides: SideCount;
+	sides: SideCountOptions;
 };
 
 const defaultDiceProps: DiceProps = {

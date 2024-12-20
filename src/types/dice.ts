@@ -1,3 +1,4 @@
+import { SIDE_COUNT_OPTIONS } from "@/constants";
 import { diceFormSchema } from "@/schemas";
 import { z } from "zod";
 
@@ -10,4 +11,4 @@ export type SetDiceProps = (
 	value: number | string
 ) => void;
 
-export type SideCount = 2 | 6 | 8 | 10 | 20;
+export type SideCountOptions = (typeof SIDE_COUNT_OPTIONS)[number];

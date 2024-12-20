@@ -1,3 +1,4 @@
+import { SideCountOptions } from "@/types";
 import {
 	BoxGeometry,
 	BufferGeometry,
@@ -43,16 +44,17 @@ export const ROLL_ANGVEL_MINMAX = {
 };
 
 export const DICE_SHAPE_BY_SIDE_COUNT: Record<
-	number,
+	SideCountOptions,
 	{
 		geo: new (...args: any[]) => BufferGeometry;
 		trianglesPerFace: number;
 	}
 > = {
-	// 2: {geo: }
 	4: { geo: TetrahedronGeometry, trianglesPerFace: 1 },
 	6: { geo: BoxGeometry, trianglesPerFace: 2 },
 	8: { geo: OctahedronGeometry, trianglesPerFace: 1 },
 	10: { geo: DodecahedronGeometry, trianglesPerFace: 3 },
 	20: { geo: IcosahedronGeometry, trianglesPerFace: 1 },
 };
+
+export const SIDE_COUNT_OPTIONS = [4, 6, 8, 10, 20];
