@@ -7,7 +7,7 @@ import { getIndexedFacesAttributes } from "./getIndexedFacesAttributes";
 import { getNonIndexedFacesAttributes } from "./getNonIndexedFacesAttributes";
 
 export const getGeometryFacesAttributes = (
-	mesh: Mesh,
+	mesh: Mesh<BufferGeometry>,
 	sideCount: SideCountOptions
 ): FaceAttributes[] => {
 	const { geometry, rotation } = mesh;
@@ -18,13 +18,19 @@ export const getGeometryFacesAttributes = (
 		faces: FaceAttributes[] = [],
 		vertsPerFace = trianglesPerFace * VERTICES_PER_TRIANGLE;
 
-	console.log(rotation);
-	const params: FaceGetterParams = [vertsPerFace, positions, faces, rotation];
+	const params: FaceGetterParams = [
+		vertsPerFace,
+		positions,
+		faces,
+		rotation,
+		sideCount,
+	];
 	if (indices) {
 		getIndexedFacesAttributes(indices, ...params);
 	} else {
 		getNonIndexedFacesAttributes(...params);
 	}
 
+	console.log(faces);
 	return faces;
 };
