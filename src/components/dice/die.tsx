@@ -1,3 +1,4 @@
+import { DICE_SHAPE_BY_SIDE_COUNT } from "@/constants";
 import { Text } from "@react-three/drei";
 import { RapierRigidBody } from "@react-three/rapier";
 import { useEffect, useMemo, useRef } from "react";
@@ -56,28 +57,7 @@ export const Die = ({
 
 	// Create geometry and extract face data
 	const { geometry, faces } = useMemo(() => {
-		let geometry: THREE.BufferGeometry;
-
-		switch (sides) {
-			case 4:
-				geometry = new THREE.TetrahedronGeometry(size);
-				break;
-			case 6:
-				geometry = new THREE.BoxGeometry(size, size, size);
-				break;
-			case 8:
-				geometry = new THREE.OctahedronGeometry(size);
-				break;
-			case 12:
-				geometry = new THREE.DodecahedronGeometry(size);
-				break;
-			case 20:
-				geometry = new THREE.IcosahedronGeometry(size);
-				break;
-			default:
-				geometry = new THREE.BoxGeometry(size, size, size);
-		}
-
+		const geometry = DICE_SHAPE_BY_SIDE_COUNT[sides].geo(size);
 		const positionArray = geometry.attributes.position.array;
 		const normalArray = geometry.attributes.normal.array;
 		const faces: {
