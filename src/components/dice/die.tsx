@@ -1,4 +1,4 @@
-import { DICE_SHAPE_BY_SIDE_COUNT } from "@/constants";
+import { DIE_SHAPE_PROPERTIES } from "@/constants";
 import { Text } from "@react-three/drei";
 import { RapierRigidBody } from "@react-three/rapier";
 import { useEffect, useMemo, useRef } from "react";
@@ -12,39 +12,6 @@ type DieProps = {
 	setDieRef?: (die: RapierRigidBody) => void;
 };
 
-// Define the mapping of face indices to die numbers for each die type
-const DICE_NUMBER_MAPPING = {
-	4: {
-		// For tetrahedron, adjacent faces sum to 5
-		faceNumbers: [1, 2, 3, 4],
-		indexToNumber: [1, 4, 2, 3],
-	},
-	6: {
-		// For cube, opposite faces sum to 7
-		faceNumbers: [1, 2, 3, 4, 5, 6],
-		// Maps geometry face index to actual die number
-		// This mapping ensures opposite faces sum to 7
-		indexToNumber: [1, 6, 2, 5, 3, 4],
-	},
-	8: {
-		// For octahedron, opposite faces sum to 9
-		faceNumbers: [1, 2, 3, 4, 5, 6, 7, 8],
-		indexToNumber: [1, 8, 2, 7, 3, 6, 4, 5],
-	},
-	12: {
-		// For dodecahedron, opposite faces sum to 13
-		faceNumbers: Array.from({ length: 12 }, (_, i) => i + 1),
-		indexToNumber: [1, 12, 2, 11, 3, 10, 4, 9, 5, 8, 6, 7],
-	},
-	20: {
-		// For icosahedron, opposite faces sum to 21
-		faceNumbers: Array.from({ length: 20 }, (_, i) => i + 1),
-		indexToNumber: [
-			10, 8, 20, 2, 12, 16, 17, 15, 18, 14, 19, 1, 13, 11, 9, 3, 7, 5, 4, 6,
-		],
-	},
-} as const;
-
 export const Die = ({
 	sides = 6,
 	size = 0.25,
@@ -57,7 +24,7 @@ export const Die = ({
 
 	// Create geometry and extract face data
 	const { geometry, faces } = useMemo(() => {
-		const geometry = DICE_SHAPE_BY_SIDE_COUNT[sides].geo(size);
+		const geometry = DIE_SHAPE_PROPERTIES[sides].geo(size);
 		const positionArray = geometry.attributes.position.array;
 		const normalArray = geometry.attributes.normal.array;
 		const faces: {
@@ -106,7 +73,7 @@ export const Die = ({
 			faceCenter.multiplyScalar(1.01);
 			faceNormal.divideScalar(verticesPerFace).normalize();
 
-			const { indexToNumber } = DICE_NUMBER_MAPPING[sides];
+			const { indexToNumber } = DIE_SHAPE_PROPERTIES[sides];
 			// Get the actual die number for this face from our mapping
 			const dieNumber = indexToNumber[f];
 

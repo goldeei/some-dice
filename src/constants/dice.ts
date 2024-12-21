@@ -110,11 +110,12 @@ export const DICE_ROTATIONS: Record<
 		{ x: -Math.PI, y: -Math.PI / 4, z: -Math.PI / 4 }, // Face 20
 	],
 };
-export const DICE_SHAPE_BY_SIDE_COUNT: Record<
+export const DIE_SHAPE_PROPERTIES: Record<
 	SideCountOptions,
 	{
 		geo: (size: number) => BufferGeometry;
 		trianglesPerFace: number;
+		indexToNumber: number[];
 	}
 > = {
 	4: {
@@ -122,30 +123,37 @@ export const DICE_SHAPE_BY_SIDE_COUNT: Record<
 			return new TetrahedronGeometry(size);
 		},
 		trianglesPerFace: 1,
+		indexToNumber: [1, 4, 2, 3],
 	},
 	6: {
 		geo(size: number) {
 			return new BoxGeometry(size, size, size);
 		},
 		trianglesPerFace: 2,
+		indexToNumber: [1, 6, 2, 5, 3, 4],
 	},
 	8: {
 		geo(size: number) {
 			return new OctahedronGeometry(size);
 		},
 		trianglesPerFace: 1,
+		indexToNumber: [1, 6, 2, 5, 3, 4],
 	},
 	12: {
 		geo(size: number) {
 			return new DodecahedronGeometry(size);
 		},
 		trianglesPerFace: 3,
+		indexToNumber: [1, 8, 2, 7, 3, 6, 4, 5],
 	},
 	20: {
 		geo(size: number) {
 			return new IcosahedronGeometry(size);
 		},
 		trianglesPerFace: 1,
+		indexToNumber: [
+			10, 8, 20, 2, 12, 16, 17, 15, 18, 14, 19, 1, 13, 11, 9, 3, 7, 5, 4, 6,
+		],
 	},
 };
 
