@@ -1,4 +1,4 @@
-import { Html, Text } from "@react-three/drei";
+import { Text } from "@react-three/drei";
 import { RapierRigidBody } from "@react-three/rapier";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
@@ -39,7 +39,7 @@ const DICE_NUMBER_MAPPING = {
 		// For icosahedron, opposite faces sum to 21
 		faceNumbers: Array.from({ length: 20 }, (_, i) => i + 1),
 		indexToNumber: [
-			1, 20, 2, 19, 3, 18, 4, 17, 5, 16, 6, 15, 7, 14, 8, 13, 9, 12, 10, 11,
+			10, 8, 20, 2, 12, 16, 17, 15, 18, 14, 19, 1, 13, 11, 9, 3, 7, 5, 4, 6,
 		],
 	},
 } as const;
@@ -180,49 +180,42 @@ export const Die = ({
 			{faces.map((face, i) => {
 				const { normal, position, id } = face;
 
-				const rotation = getFaceRotation(face.normal);
+				const rotation = getFaceRotation(normal);
 				const scale = [1, 1, 1];
-				if (
-					face.normal.toArray().some((normal) => normal !== 0) &&
-					face.normal.y >= 0
-				) {
+				if (normal.toArray().some((normal) => normal !== 0) && normal.y >= 0) {
 					scale[0] = -1;
 				}
-				if (face.normal.y < 0) {
+				if (normal.y < 0) {
 					scale[1] = -1;
 				}
-				if (face.normal.z > 0 && face.normal.y > 0) {
+				if (normal.z > 0 && normal.y > 0) {
 					scale[1] = -1;
 					scale[0] = 1;
 				}
 
-				// console.groupCollapsed(face.id);
-				// console.log("POSITION");
-				// console.log(face.position);
-				// console.log("NORMAL");
-				// console.log(face.normal);
-				// console.log("SCALE");
-				// console.log(scale);
-				// console.groupEnd();
+				console.groupCollapsed(face.id);
+				console.log("POSITION");
+				console.log(face.position);
+				console.log("NORMAL");
+				console.log(face.normal);
+				console.log("SCALE");
+				console.log(scale);
+				console.groupEnd();
 
 				const fontSize = size * 0.3;
 				return (
 					<group
 						key={`face-${i}`}
-						position={face.position}
-						rotation={rotation}
+						position={position}
+						rotation={[rotation.x, rotation.y, rotation.z]}
 						onClick={() => console.log(id)}
+						scale={[scale[0], scale[1], scale[2]]}
 					>
-						<Text
-							fontSize={fontSize}
-							anchorX="center"
-							anchorY="middle"
-							scale={scale}
-						>
-							{face.id}
+						<Text fontSize={fontSize} anchorX="center" anchorY="middle">
+							{id}
 						</Text>
 						{id === 9 || id === 6 ? (
-							<mesh position={[0, scale[1] > 0 ? -0.05 : 0.05, 0]}>
+							<mesh position={[0, -0.05, 0]}>
 								<boxGeometry args={[0.05, 0.01, 0]} />
 								<meshBasicMaterial color="white" />
 							</mesh>
